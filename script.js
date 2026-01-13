@@ -1,80 +1,84 @@
-let data = [];
+let allQuestions = [];
+let quizQuestions = [];
+let current = 0;
+let score = 0;
+let lang = "hi";
 
-/* CSV loader */
-fetch("data.csv")
-  .then(res => res.text())
-  .then(text => {
-    const lines = text.split("\n");
-    const headers = lines[0].split(",");
-
-    for (let i = 1; i < lines.length; i++) {
-      const row = lines[i].split(",");
-      if (row.length >= 2) {
-        data.push({
-          question: row[0],
-          answer: row[1]
-        });
-      }
-    }
+fetch("data.json")
+  .then(res => res.json())
+  .then(data => {
+    allQuestions = data;
+    startQuiz();
   });
 
-const input = document.getElementById("search");
-const results = document.getElementById("results");
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
 
-/* Text search */
-input.addEventListener("input", () => {
-  showResult(input.value);
-});
+function startQuiz() {
+  quizQuestions = shuffle([...allQuestions]).slice(0, 10);
+  current = 0;
+  score = 0;
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("quiz-box").style.display = "block";
+  showQuestion();
+}
 
-/* Voice Recognition */
-const micBtn = document.getElementById("mic");
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const recognition = new SpeechRecognition();
+function setLang(l) {
+  lang = l;
+  showQuestion();
+}
 
-recognition.lang = "hi-IN";
+function showQuestion() {
+  const q = quizQuestions[current];
+  document.getElementById("q-count").innerText =
+    `Question ${current + 1} / 10`;
 
-micBtn.onclick = () => {
-  recognition.start();
-};
+  document.getElementById("question").innerText =
+    q.question[lang];
 
-recognition.onresult = (event) => {
-  const spokenText = event.results[0][0].transcript;
-  input.value = spokenText;
-  showResult(spokenText);
-};
+  const optBox = document.getElementById("options");
+  optBox.innerHTML = "";
 
-/* Search + Speak */
-function showResult(query) {
-  results.innerHTML = "";
-  const q = query.toLowerCase();
-
-  let found = false;
-
-  data.forEach(item => {
-    if (item.question.toLowerCase().includes(q)) {
-      found = true;
-
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <strong>Q:</strong> ${item.question}<br>
-        <strong>A:</strong> ${item.answer}
-      `;
-      results.appendChild(div);
-
-      speak(item.answer);
-    }
+  q.options[lang].forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(i, btn);
+    optBox.appendChild(btn);
   });
 
-  if (!found && q.length > 2) {
-    speak("Is prashn ka uttar data mein uplabdh nahi hai");
+  document.getElementById("nextBtn").disabled = true;
+}
+
+function checkAnswer(index, btn) {
+  const q = quizQuestions[current];
+  const buttons = document.querySelectorAll("#options button");
+
+  buttons.forEach(b => b.disabled = true);
+
+  if (index === q.answer_index) {
+    btn.classList.add("correct");
+    score++;
+  } else {
+    btn.classList.add("wrong");
+    buttons[q.answer_index].classList.add("correct");
+  }
+
+  document.getElementById("nextBtn").disabled = false;
+}
+
+function nextQuestion() {
+  current++;
+  if (current < quizQuestions.length) {
+    showQuestion();
+  } else {
+    showResult();
   }
 }
 
-/* Text to Speech */
-function speak(text) {
-  const msg = new SpeechSynthesisUtterance(text);
-  msg.lang = "hi-IN";
-  speechSynthesis.cancel();
-  speechSynthesis.speak(msg);
+function showResult() {
+  document.getElementById("quiz-box").style.display = "none";
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("score").innerText =
+    `You scored ${score} out of 10`;
 }
