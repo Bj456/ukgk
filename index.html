@@ -1,19 +1,37 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Uttarakhand GK Voice App</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Uttarakhand GK Quiz</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<h1>Uttarakhand GK</h1>
+<div class="app">
+  <h1>Uttarakhand GK Quiz</h1>
 
-<input type="text" id="search" placeholder="Yahan likhiye ya mic dabaiye">
+  <div class="lang">
+    <button onclick="setLang('hi')">हिंदी</button>
+    <button onclick="setLang('en')">English</button>
+  </div>
 
-<button id="mic">🎤 Bolkar Poochiye</button>
+  <div id="quiz-box">
+    <div id="q-count"></div>
+    <h2 id="question"></h2>
 
-<div id="results"></div>
+    <div id="options"></div>
+
+    <button id="nextBtn" onclick="nextQuestion()" disabled>
+      Next
+    </button>
+  </div>
+
+  <div id="result" class="hidden">
+    <h2>Result</h2>
+    <p id="score"></p>
+    <button onclick="startQuiz()">Restart</button>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>
