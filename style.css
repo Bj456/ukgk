@@ -1,33 +1,54 @@
 body {
   font-family: Arial, sans-serif;
-  background: #eef3f7;
+  background: #f2f2f2;
+}
+
+.app {
+  max-width: 600px;
+  background: #fff;
+  margin: 40px auto;
   padding: 20px;
+  border-radius: 10px;
 }
 
 h1 {
   text-align: center;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  margin-bottom: 10px;
+.lang {
+  text-align: center;
+  margin-bottom: 15px;
 }
 
-button {
+.lang button {
+  margin: 5px;
+  padding: 6px 12px;
+}
+
+#options button {
+  display: block;
   width: 100%;
-  padding: 12px;
-  font-size: 18px;
-  background: #2d89ef;
+  margin: 8px 0;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.correct {
+  background: #4caf50;
   color: white;
-  border: none;
-  border-radius: 6px;
 }
 
-.card {
-  background: white;
-  padding: 15px;
-  margin-top: 10px;
-  border-radius: 8px;
+.wrong {
+  background: #f44336;
+  color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+#nextBtn {
+  margin-top: 15px;
+  padding: 10px;
+  width: 100%;
 }
